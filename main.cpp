@@ -54,8 +54,8 @@ int main(int argv, char* argc[])
     qDebug() << a;
     QString json = QString(file.readAll());
     file.close();
-  //  qDebug() << json;
 
+    // ADD COMMENT
     QJsonObject obj = ObjectFromString(json);
  //   qDebug() << obj;
     QJsonArray mesh = obj["meshes"].toArray();
