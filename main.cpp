@@ -1,42 +1,10 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <qjson-qt5/parser.h>
-#include <qjson-qt5/qjson_export.h>
-#include <qjson-qt5/serializer.h>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
 
 #include <qDebug>
 #include <QFile>
 
-
-QJsonObject ObjectFromString(const QString& in)
-{
-    QJsonObject obj;
-
-    QJsonDocument doc = QJsonDocument::fromJson(in.toUtf8());
-
-    // check validity of the document
-    if(!doc.isNull())
-    {
-        if(doc.isObject())
-        {
-            obj = doc.object();
-
-        }
-        else
-        {
-            qDebug() << "Document is not an object" << endl;
-        }
-    }
-    else
-    {
-        qDebug() << "Invalid JSON...\n" << in << endl;
-    }
-
-    return obj;
-}
+#include <mesh.h>
 
 int main(int argv, char* argc[])
 {
@@ -46,25 +14,16 @@ int main(int argv, char* argc[])
 
 //    return a.exec();
 
+    Mesh mesh1 = Mesh::LoadFromJSON("torus.babylon");
+    Mesh mesh2 = Mesh::LoadFromJSON("monkey.babylon");
+    Mesh mesh3 = Mesh::LoadFromJSON("Cylinder.babylon");
+    Mesh mesh4 = Mesh::LoadFromJSON("conus.babylon");
+    Mesh mesh5 = Mesh::LoadFromJSON("UVSphere.babylon");
+    Mesh mesh7 = Mesh::LoadFromJSON("ICOSphere.babylon");
+    Mesh mesh6 = Mesh::LoadFromJSON("cube.babylon");
+    Mesh mesh8 = Mesh::LoadFromJSON("other.babylon");
 
-    QFile file("cube2.babylon");
-
-    bool a = file.open(QIODevice::ReadOnly);
-
-    qDebug() << a;
-    QString json = QString(file.readAll());
-    file.close();
-
-    // ADD COMMENT
-    QJsonObject obj = ObjectFromString(json);
- //   qDebug() << obj;
-    QJsonArray mesh = obj["meshes"].toArray();
-
-    qDebug() << mesh[0];
-    QJsonObject obj2 = mesh[0].toObject();
-    QJsonArray arr = obj2["indices"].toArray();
-    qDebug() << arr[1];
-
-
+    Mesh newMesh(mesh6);
+    qDebug()<< mesh8.isEqual(newMesh);
     return 0;
 }
