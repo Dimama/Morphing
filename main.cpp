@@ -6,7 +6,7 @@
 
 #include <mesh.h>
 
-int main(int argv, char* argc[])
+int main(int argc, char* argv[])
 {
 //    QApplication a(argc, argv);
 //    MainWindow w;
@@ -23,7 +23,10 @@ int main(int argv, char* argc[])
     Mesh mesh6 = Mesh::LoadFromJSON("cube.babylon");
     Mesh mesh8 = Mesh::LoadFromJSON("other.babylon");
 
+
     Mesh newMesh(mesh6);
+    newMesh.LoadNormalsFromMesh(mesh7.getFaces());
+    vector<Face> faces = mesh8.CalculateMorphingFaces(mesh6);
     qDebug()<< mesh8.isEqual(newMesh);
     return 0;
 }

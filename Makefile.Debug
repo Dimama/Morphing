@@ -56,7 +56,9 @@ OBJECTS       = debug/main.o \
 DIST          =  mainwindow.h \
 		mesh.h \
 		structures.h \
-		vector3.h main.cpp \
+		vector3.h \
+		b_error.h \
+		fileerrors.h main.cpp \
 		mainwindow.cpp \
 		mesh.cpp \
 		vector3.cpp
@@ -346,19 +348,20 @@ debug/main.o: main.cpp mainwindow.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qdesktopwidget.h \
 		../../Qt/5.6/mingw49_32/include/QtGui/qguiapplication.h \
 		../../Qt/5.6/mingw49_32/include/QtGui/qinputmethod.h \
-		../../Qt/5.6/mingw49_32/include/qjson-qt5/parser.h \
-		../../Qt/5.6/mingw49_32/include/qjson-qt5/qjson_export.h \
-		../../Qt/5.6/mingw49_32/include/qjson-qt5/serializer.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qDebug \
+		../../Qt/5.6/mingw49_32/include/QtCore/QFile \
+		mesh.h \
+		structures.h \
+		../../Qt/5.6/mingw49_32/include/QtGui/QVector3D \
+		../../Qt/5.6/mingw49_32/include/QtGui/qvector3d.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/QString \
 		../../Qt/5.6/mingw49_32/include/QtCore/QJsonDocument \
 		../../Qt/5.6/mingw49_32/include/QtCore/qjsondocument.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qjsonvalue.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/QJsonObject \
 		../../Qt/5.6/mingw49_32/include/QtCore/qjsonobject.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/QJsonArray \
-		../../Qt/5.6/mingw49_32/include/QtCore/qjsonarray.h \
-		../../Qt/5.6/mingw49_32/include/QtCore/qDebug \
-		../../Qt/5.6/mingw49_32/include/QtCore/QFile \
-		vector3.h
+		../../Qt/5.6/mingw49_32/include/QtCore/qjsonarray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/main.o main.cpp
 
 debug/mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -500,20 +503,25 @@ debug/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qstyle.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qtabbar.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qrubberband.h \
-		../../Qt/5.6/mingw49_32/include/QtWidgets/QMenuBar \
-		../../Qt/5.6/mingw49_32/include/QtWidgets/qmenubar.h \
-		../../Qt/5.6/mingw49_32/include/QtWidgets/qmenu.h \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/QPushButton \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/qpushbutton.h \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/qabstractbutton.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/QStatusBar \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qstatusbar.h \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/QToolBar \
 		../../Qt/5.6/mingw49_32/include/QtWidgets/qtoolbar.h \
-		../../Qt/5.6/mingw49_32/include/QtWidgets/QWidget
+		../../Qt/5.6/mingw49_32/include/QtWidgets/QWidget \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/QMessageBox \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/qmessagebox.h \
+		../../Qt/5.6/mingw49_32/include/QtWidgets/qdialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/mainwindow.o mainwindow.cpp
 
 debug/mesh.o: mesh.cpp mesh.h \
-		../../Qt/5.6/mingw49_32/include/QtCore/QString \
-		../../Qt/5.6/mingw49_32/include/QtCore/qstring.h \
-		../../Qt/5.6/mingw49_32/include/QtCore/qchar.h \
+		structures.h \
+		../../Qt/5.6/mingw49_32/include/QtGui/QVector3D \
+		../../Qt/5.6/mingw49_32/include/QtGui/qvector3d.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qpoint.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qnamespace.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qglobal.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qconfig.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qfeatures.h \
@@ -543,11 +551,53 @@ debug/mesh.o: mesh.cpp mesh.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qmutex.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qnumeric.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qversiontagging.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qmetatype.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qbytearray.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qrefcount.h \
-		../../Qt/5.6/mingw49_32/include/QtCore/qnamespace.h \
 		../../Qt/5.6/mingw49_32/include/QtCore/qarraydata.h \
-		../../Qt/5.6/mingw49_32/include/QtCore/qstringbuilder.h
+		../../Qt/5.6/mingw49_32/include/QtCore/qstring.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qchar.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qstringbuilder.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qalgorithms.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qobjectdefs.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/QString \
+		../../Qt/5.6/mingw49_32/include/QtCore/QJsonDocument \
+		../../Qt/5.6/mingw49_32/include/QtCore/qjsondocument.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qjsonvalue.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/QJsonObject \
+		../../Qt/5.6/mingw49_32/include/QtCore/qjsonobject.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qiterator.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qpair.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/QJsonArray \
+		../../Qt/5.6/mingw49_32/include/QtCore/qjsonarray.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/QFile \
+		../../Qt/5.6/mingw49_32/include/QtCore/qfile.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qfiledevice.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qiodevice.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qobject.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qlist.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qhashfunctions.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qbytearraylist.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qstringlist.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qregexp.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qstringmatcher.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qcoreevent.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qscopedpointer.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qobject_impl.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qDebug \
+		../../Qt/5.6/mingw49_32/include/QtCore/qdebug.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qhash.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qmap.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qtextstream.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qlocale.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qvariant.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qshareddata.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qvector.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qset.h \
+		../../Qt/5.6/mingw49_32/include/QtCore/qcontiguouscache.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/mesh.o mesh.cpp
 
 debug/vector3.o: vector3.cpp vector3.h

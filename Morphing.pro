@@ -20,7 +20,9 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     mesh.h \
     structures.h \
-    vector3.h
+    vector3.h \
+    b_error.h \
+    fileerrors.h
 
 FORMS    += mainwindow.ui
 

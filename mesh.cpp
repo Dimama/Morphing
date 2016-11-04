@@ -1,10 +1,7 @@
 #include "mesh.h"
 
-/* ПЕРЕНЕСТИ В *.H */
-
-#include <qDebug>
-#include <QFile>
-
+/* Добавить обработку ошибок, возможно убрать массив вершин*/
+#include <QDebug>
 Mesh::Mesh()
 {
 
@@ -28,6 +25,59 @@ Mesh &Mesh::operator=(const Mesh &mesh)
     this->rotation = mesh.rotation;
 
     return *this;
+}
+
+void Mesh::LoadNormalsFromMesh(const vector<Face>& faces)
+{
+    for(unsigned int i = 0; i < this->faces.size(); i++)
+    {
+        this->faces[i].A.Normal = faces[i].A.Normal;
+        this->faces[i].B.Normal = faces[i].B.Normal;
+        this->faces[i].C.Normal = faces[i].C.Normal;
+    }
+}
+
+void Mesh::CalculateFaceNormals(int i)
+{
+    QVector3D v1 = this->faces[i].A.Coord - this->faces[i].B.Coord;
+    QVector3D v2 = this->faces[i].C.Coord - this->faces[i].A.Coord;
+
+    QVector3D normal = QVector3D::crossProduct(v1,v2);
+
+    this->faces[i].A.Normal = normal;
+    this->faces[i].B.Normal = normal;
+    this->faces[i].C.Normal = normal;
+}
+
+void Mesh::Morph(const vector<Face> &faces, int speed)
+{
+    for(unsigned int i = 0; i < this->faces.size(); i++)
+    {
+        this->faces[i].A.Coord += speed * (faces[i].A.Coord/1000);
+        this->faces[i].B.Coord += speed * (faces[i].B.Coord/1000);
+        this->faces[i].C.Coord += speed * (faces[i].C.Coord/1000);
+        this->CalculateFaceNormals(i);
+    }
+}
+
+vector<Face> Mesh::CalculateMorphingFaces(const Mesh &mesh)
+{
+    vector<Face> faces;
+    Face f;
+    for (unsigned int i = 0; i < this->faces.size(); i++)
+    {
+        f.A.Coord = mesh.faces[i].A.Coord - this->faces[i].A.Coord;
+        f.B.Coord = mesh.faces[i].B.Coord - this->faces[i].B.Coord;
+        f.C.Coord = mesh.faces[i].C.Coord - this->faces[i].C.Coord;
+
+        f.A.Normal = mesh.faces[i].A.Normal;
+        f.B.Normal = mesh.faces[i].B.Normal;
+        f.C.Normal = mesh.faces[i].C.Normal;
+
+        faces.push_back(f);
+    }
+
+    return faces;
 }
 
 Mesh Mesh::LoadFromJSON(const char *filename)
@@ -74,7 +124,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
         double ny = normals[i*3+1].toDouble();
         double nz = normals[i*3+2].toDouble();
 
-        Vertex v = {Vector3(x,y,z), Vector3(nx,ny,nz)};
+        Vertex v = {QVector3D(x,y,z), QVector3D(nx,ny,nz)};
 
         model.vertices.push_back(v);
     }
@@ -90,7 +140,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
         model.faces.push_back(f);
     }
 
-    model.position = Vector3(position[0].toDouble(), position[1].toDouble(), position[2].toDouble());
+    model.position = QVector3D(position[0].toDouble(), position[1].toDouble(), position[2].toDouble());
 
     return model;
 }
@@ -101,7 +151,12 @@ int Mesh::isEqual(const Mesh &mesh)
         return 2;
    if(this->name == mesh.name)  // одинаковые объекты
        return 1;
-   return 0;   //  объекты разные с одинаковым числом граней
+   return 0;    //  объекты разные с одинаковым числом граней
+}
+
+const vector<Face> &Mesh::getFaces()
+{
+    return this->faces;
 }
 
 QJsonObject Mesh::ObjectFromString(const QString &in)
@@ -116,7 +171,6 @@ QJsonObject Mesh::ObjectFromString(const QString &in)
         if(doc.isObject())
         {
             obj = doc.object();
-
         }
         else
         {

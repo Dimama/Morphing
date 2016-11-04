@@ -1,15 +1,15 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 
-#include "vector3.h"
+#include <QVector3D>
 
 /* Структуры данных*/
 
 typedef struct _Vertex
 {
-    Vector3 Coord;
-    Vector3 Normal;
-    Vector3 WCoord;
+    QVector3D Coord;
+    QVector3D Normal;
+    QVector3D WCoord;
 }Vertex;
 
 typedef struct _Face
