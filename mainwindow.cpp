@@ -2,16 +2,64 @@
 #include "ui_mainwindow.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    scene = new QGraphicsScene();
+    ui->Canvas->setScene(scene);
+    img = new QImage(ui->Canvas->width() - 2, ui->Canvas->height() - 2, QImage::Format_RGB888);
+    img->fill(Qt::white);
+    scene->addPixmap(QPixmap::fromImage(*img));
+    painter = new QPainter(img);
+    painter->setPen(Qt::black);
+    timer = new QTimer();
+    msg = new Message();
+
+
+    try
+    {
+        mesh1 = Mesh::LoadFromJSON("cube.babylon");
+        mesh2 = Mesh::LoadFromJSON("other.babylon");
+    }
+    catch(B_Error& err)
+    {
+        msg->showErrorMessage(err.info());
+    }
+
+    mesh = mesh1;
+    cam.setPosition(QVector3D(0,0,10));
+    cam.setTarget(QVector3D(0,0,0));
+
+    ui->lbl_obj1->setText("Объект 1: " + mesh1.getName());
+    ui->lbl_obj2->setText("Объект 2: " + mesh2.getName());
+
+    ui->rb_12->setChecked(1);
+    ui->rb_obj1->setChecked(1);
+
+    render = false;
+    morph = false;
+
+    speed = ui->spb_speed->value();
+    steps = 100;
+    step = INT_MAX;
+
+    ui->progressBar->setMaximum(steps);//
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timer_overflow()));
+
+    ui->btn_morph->setEnabled(0);
 }
 
 MainWindow::~MainWindow()
 {
+//    delete scene;
+//    delete img;
+//    delete painter;
+    delete timer;
+    delete msg;
     delete ui;
 }
 
@@ -19,4 +67,137 @@ void MainWindow::on_actionHELP_triggered()
 {
 
     QMessageBox::information(this,"Справка","Справка");
+}
+
+void MainWindow::on_btn_morph_clicked()
+{
+    if(mesh1.isEqual(mesh2) == 1)
+    {
+        msg->showMessage("Объекты одинаковые!");
+        return;
+    }
+    if(mesh1.isEqual(mesh2) == 2)
+    {
+        msg->showMessage("Разное количество полигонов у объектов!");
+        return;
+    }
+
+    if(mesh.isEqual(mesh1) == 1)
+    {
+        faces = mesh1.CalculateMorphingFaces(mesh2);
+    }
+    else
+    {
+        faces = mesh2.CalculateMorphingFaces(mesh1);
+    }
+
+    if(!timer->isActive())
+    {
+        timer->start(1000);
+    }
+
+    step = 0;
+
+    /* заблокировать кнопки */
+    ui->btn_morph->setEnabled(0);
+    ui->btn_load->setEnabled(0);
+
+
+}
+
+/* Загрузка модели*/
+void MainWindow::on_btn_load_clicked()
+{
+
+    const char *fileName = msg->getFileName();
+    Mesh mesh_tmp;
+    if(!fileName)
+    {
+        msg->showErrorMessage("Модель не загружена!");
+        return;
+    }
+
+    try
+    {
+        mesh_tmp = Mesh::LoadFromJSON(fileName);
+    }
+
+    catch(B_Error& err)
+    {
+        msg->showErrorMessage(err.info());
+        return;
+    }
+
+    if(ui->rb_obj1->isChecked())
+    {
+        mesh1 = mesh_tmp;
+        mesh = mesh1;
+        ui->lbl_obj1->setText("Объект 1: " + mesh1.getName());
+
+    }
+    else
+    {
+        mesh2 = mesh_tmp;
+        mesh = mesh2;
+        ui->lbl_obj2->setText("Объект 2: " + mesh2.getName());
+    }
+
+}
+
+
+void MainWindow::on_btn_render_clicked()
+{
+    if(!timer->isActive())
+    {
+        ui->btn_render->setText("Пауза");
+        timer->start(1000);
+        if(step == INT_MAX)
+        {
+            ui->btn_morph->setEnabled(1);
+        }
+    }
+    else
+    {
+        ui->btn_render->setText("Отрисовать");
+        timer->stop();
+    }
+    render = true;
+}
+
+/* Обрабатываем каждую секунду таймера*/
+void MainWindow::timer_overflow()
+{
+    if(step < steps)
+    {
+        step += speed;
+        ui->progressBar->setValue(step);
+    }
+    if(steps - step < speed)
+    {
+        speed = steps-step;
+    }
+    if(step == steps)
+    {
+        ui->progressBar->setValue(0);
+        ui->btn_load->setEnabled(1);
+        ui->btn_morph->setEnabled(1);
+
+        step = INT_MAX;
+    }
+
+    if(render)
+    {
+        // отрисовка
+    }
+
+}
+
+void MainWindow::on_spb_speed_valueChanged()
+{
+   // speed = ui->spb_speed->value();
+}
+
+void MainWindow::on_spb_speed_valueChanged(int arg1)
+{
+    speed = arg1;
 }
