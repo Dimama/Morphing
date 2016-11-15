@@ -4,18 +4,14 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#define N 1000000
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scene = new QGraphicsScene();
-    ui->Canvas->setScene(scene);
-    img = new QImage(ui->Canvas->width() - 2, ui->Canvas->height() - 2, QImage::Format_RGB888);
-    img->fill(Qt::white);
-    scene->addPixmap(QPixmap::fromImage(*img));
-    painter = new QPainter(img);
-    painter->setPen(Qt::black);
+    drawer = new Drawer(ui->Canvas->width(), ui->Canvas->height());
+    ui->Canvas->setScene(drawer->getScene());
     timer = new QTimer();
     msg = new Message();
 
@@ -43,14 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
     render = false;
     morph = false;
 
-    speed = ui->spb_speed->value();
     steps = 100;
-    step = INT_MAX;
+    step = N;
 
-    ui->progressBar->setMaximum(steps);//
+    ui->progressBar->setMaximum(steps);   //
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timer_overflow()));
 
     ui->btn_morph->setEnabled(0);
+
 }
 
 MainWindow::~MainWindow()
@@ -91,12 +87,13 @@ void MainWindow::on_btn_morph_clicked()
         faces = mesh2.CalculateMorphingFaces(mesh1);
     }
 
-    if(!timer->isActive())
+    if(!(timer->isActive()))
     {
         timer->start(1000);
     }
 
     step = 0;
+    speed = ui->spb_speed->value();   // НЕ ТРОГАТЬ!
 
     /* заблокировать кнопки */
     ui->btn_morph->setEnabled(0);
@@ -147,11 +144,13 @@ void MainWindow::on_btn_load_clicked()
 
 void MainWindow::on_btn_render_clicked()
 {
-    if(!timer->isActive())
+
+    speed = ui->spb_speed->value();
+    if(!(timer->isActive()))
     {
         ui->btn_render->setText("Пауза");
         timer->start(1000);
-        if(step == INT_MAX)
+        if(step == N)
         {
             ui->btn_morph->setEnabled(1);
         }
@@ -167,14 +166,17 @@ void MainWindow::on_btn_render_clicked()
 /* Обрабатываем каждую секунду таймера*/
 void MainWindow::timer_overflow()
 {
-    if(step < steps)
-    {
-        step += speed;
-        ui->progressBar->setValue(step);
-    }
+
+
     if(steps - step < speed)
     {
         speed = steps-step;
+    }
+    if(step < steps)
+    {
+        qDebug() << speed;
+        step += speed;
+        ui->progressBar->setValue(step);
     }
     if(step == steps)
     {
@@ -182,7 +184,8 @@ void MainWindow::timer_overflow()
         ui->btn_load->setEnabled(1);
         ui->btn_morph->setEnabled(1);
 
-        step = INT_MAX;
+        step = N;
+
     }
 
     if(render)
@@ -192,12 +195,11 @@ void MainWindow::timer_overflow()
 
 }
 
-void MainWindow::on_spb_speed_valueChanged()
-{
-   // speed = ui->spb_speed->value();
-}
+
 
 void MainWindow::on_spb_speed_valueChanged(int arg1)
 {
-    speed = arg1;
+  //  speed = arg1;
+    ui->spb_speed->setValue(arg1);
+    speed = ui->spb_speed->value();
 }
