@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-/* Добавить обработку ошибок, возможно убрать массив вершин*/
+/* возможно убрать массив вершин*/
 #include <QDebug>
 Mesh::Mesh()
 {
@@ -16,6 +16,14 @@ Mesh::Mesh(const Mesh &mesh)
     this->rotation = mesh.rotation;
 }
 
+Mesh::~Mesh()
+{
+    if(this->faces.size() > 0)
+        this->faces.clear();
+    if(this->vertices.size() > 0)
+        this->vertices.clear();
+}
+
 Mesh &Mesh::operator=(const Mesh &mesh)
 {
     this->name = mesh.name;
@@ -27,16 +35,16 @@ Mesh &Mesh::operator=(const Mesh &mesh)
     return *this;
 }
 
-void Mesh::LoadNormalsFromMesh(const vector<Face>& faces)
+
+void Mesh::LoadNormalsFromMesh(const Mesh &mesh)
 {
     for(unsigned int i = 0; i < this->faces.size(); i++)
     {
-        this->faces[i].A.Normal = faces[i].A.Normal;
-        this->faces[i].B.Normal = faces[i].B.Normal;
-        this->faces[i].C.Normal = faces[i].C.Normal;
+        this->faces[i].A.Normal = mesh.faces[i].A.Normal;
+        this->faces[i].B.Normal = mesh.faces[i].B.Normal;
+        this->faces[i].C.Normal = mesh.faces[i].C.Normal;
     }
 }
-
 void Mesh::CalculateFaceNormals(int i)
 {
     QVector3D v1 = this->faces[i].A.Coord - this->faces[i].B.Coord;
@@ -59,6 +67,8 @@ void Mesh::Morph(const vector<Face> &faces, int speed)
         this->CalculateFaceNormals(i);
     }
 }
+
+
 
 vector<Face> Mesh::CalculateMorphingFaces(const Mesh &mesh)
 {
@@ -87,7 +97,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
 
     if(!a)
     {
-        // Выбросить ошибку открытия файла
+        throw E_OpenFile();
     }
 
     qDebug() << a;
@@ -124,7 +134,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
         double ny = normals[i*3+1].toDouble();
         double nz = normals[i*3+2].toDouble();
 
-        Vertex v = {QVector3D(x,y,z), QVector3D(nx,ny,nz)};
+        Vertex v = {QVector3D(x,y,z), QVector3D(nx,ny,nz), QVector3D(0,0,0)};
 
         model.vertices.push_back(v);
     }
@@ -159,13 +169,17 @@ const vector<Face> &Mesh::getFaces()
     return this->faces;
 }
 
+const vector<Face> &Mesh::getFaces() const
+{
+    return this->faces;
+}
+
 QJsonObject Mesh::ObjectFromString(const QString &in)
 {
     QJsonObject obj;
 
     QJsonDocument doc = QJsonDocument::fromJson(in.toUtf8());
 
-    // check validity of the document
     if(!doc.isNull())
     {
         if(doc.isObject())
@@ -174,15 +188,20 @@ QJsonObject Mesh::ObjectFromString(const QString &in)
         }
         else
         {
-            // Выбросить ошибку
+            throw E_ReadFile();
             qDebug() << "Document is not an object" << endl;
         }
     }
     else
     {
-        // Выбросить ошибку
+        throw E_ReadFile();
         qDebug() << "Invalid JSON...\n" << in << endl;
     }
 
     return obj;
+}
+
+QString &Mesh::getName()
+{
+    return this->name;
 }

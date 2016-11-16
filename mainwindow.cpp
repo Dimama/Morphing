@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#define N 1000000
+#define N INT_MAX
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -57,6 +57,7 @@ MainWindow::~MainWindow()
     delete timer;
     delete msg;
     delete ui;
+    delete drawer;
 }
 
 void MainWindow::on_actionHELP_triggered()
@@ -99,6 +100,7 @@ void MainWindow::on_btn_morph_clicked()
     ui->btn_morph->setEnabled(0);
     ui->btn_load->setEnabled(0);
 
+    morph = true;
 
 }
 
@@ -177,6 +179,7 @@ void MainWindow::timer_overflow()
         qDebug() << speed;
         step += speed;
         ui->progressBar->setValue(step);
+        mesh.Morph(faces,speed);
     }
     if(step == steps)
     {
@@ -185,12 +188,15 @@ void MainWindow::timer_overflow()
         ui->btn_morph->setEnabled(1);
 
         step = N;
+        morph = false;
 
     }
 
+    render = (morph || ui->spb_x->value() || ui->spb_y->value() || ui->spb_z->value());
     if(render)
     {
-        // отрисовка
+        drawer->Render(mesh,cam,qRgb(0,0,0),false);
+
     }
 
 }
@@ -199,7 +205,6 @@ void MainWindow::timer_overflow()
 
 void MainWindow::on_spb_speed_valueChanged(int arg1)
 {
-  //  speed = arg1;
     ui->spb_speed->setValue(arg1);
     speed = ui->spb_speed->value();
 }
