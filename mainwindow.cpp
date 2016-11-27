@@ -5,6 +5,9 @@
 #include <QDebug>
 
 #define N INT_MAX
+#define TIME 22
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -51,9 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-//    delete scene;
-//    delete img;
-//    delete painter;
     delete timer;
     delete msg;
     delete ui;
@@ -79,18 +79,21 @@ void MainWindow::on_btn_morph_clicked()
         return;
     }
 
+    faces.clear();
     if(mesh.isEqual(mesh1) == 1)
     {
+        mesh.setName(mesh2.getName());
         faces = mesh1.CalculateMorphingFaces(mesh2);
     }
     else
     {
+        mesh.setName(mesh1.getName());
         faces = mesh2.CalculateMorphingFaces(mesh1);
     }
 
     if(!(timer->isActive()))
     {
-        timer->start(1000);
+        timer->start(TIME);
     }
 
     step = 0;
@@ -151,7 +154,7 @@ void MainWindow::on_btn_render_clicked()
     if(!(timer->isActive()))
     {
         ui->btn_render->setText("Пауза");
-        timer->start(1000);
+        timer->start(TIME);
         if(step == N)
         {
             ui->btn_morph->setEnabled(1);
@@ -169,14 +172,14 @@ void MainWindow::on_btn_render_clicked()
 void MainWindow::timer_overflow()
 {
 
-
+    t.start();
+    mesh.setRotation(ui->spb_x->value(), ui->spb_y->value(), ui->spb_z->value());
     if(steps - step < speed)
     {
         speed = steps-step;
     }
     if(step < steps)
     {
-        qDebug() << speed;
         step += speed;
         ui->progressBar->setValue(step);
         mesh.Morph(faces,speed);
@@ -189,18 +192,17 @@ void MainWindow::timer_overflow()
 
         step = N;
         morph = false;
-
     }
 
     render = (morph || ui->spb_x->value() || ui->spb_y->value() || ui->spb_z->value());
     if(render)
     {
-        drawer->Render(mesh,cam,qRgb(0,0,0),false);
+        drawer->Render(mesh,cam,qRgb(0,0,255),false);
 
     }
 
+    ui->statusBar->showMessage("Render time: " + QString::number(t.elapsed()));
 }
-
 
 
 void MainWindow::on_spb_speed_valueChanged(int arg1)

@@ -73,9 +73,10 @@ void Mesh::Morph(const vector<Face> &faces, int speed)
 vector<Face> Mesh::CalculateMorphingFaces(const Mesh &mesh)
 {
     vector<Face> faces;
-    Face f;
+
     for (unsigned int i = 0; i < this->faces.size(); i++)
     {
+        Face f;
         f.A.Coord = mesh.faces[i].A.Coord - this->faces[i].A.Coord;
         f.B.Coord = mesh.faces[i].B.Coord - this->faces[i].B.Coord;
         f.C.Coord = mesh.faces[i].C.Coord - this->faces[i].C.Coord;
@@ -189,13 +190,11 @@ QJsonObject Mesh::ObjectFromString(const QString &in)
         else
         {
             throw E_ReadFile();
-            qDebug() << "Document is not an object" << endl;
         }
     }
     else
     {
         throw E_ReadFile();
-        qDebug() << "Invalid JSON...\n" << in << endl;
     }
 
     return obj;
@@ -205,3 +204,26 @@ QString &Mesh::getName()
 {
     return this->name;
 }
+
+void Mesh::setName(const QString &name)
+{
+    this->name = name;
+}
+
+void Mesh::setRotation(int x, int y, int z)
+{
+    this->rotation.setX(this->rotation.x() + x * 0.02);
+    this->rotation.setY(this->rotation.y() + y * 0.02);
+    this->rotation.setZ(this->rotation.z() + z * 0.02);
+}
+
+QVector3D Mesh::getRotation() const
+{
+    return this->rotation;
+}
+
+QVector3D Mesh::getPosition() const
+{
+    return this->position;
+}
+
