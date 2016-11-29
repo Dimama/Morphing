@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     render = false;
     morph = false;
 
-    steps = 100;
+    steps = 1000;
     step = N;
 
     ui->progressBar->setMaximum(steps);   //

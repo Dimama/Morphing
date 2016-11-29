@@ -27,6 +27,7 @@ public:
     // вернуть в private
     static QVector3D TransformCoordinate(const QMatrix4x4& mat, const QVector3D& vec);
     static QMatrix4x4 RotationYawPitchRoll(float yaw, float pitch, float roll);
+    static QMatrix4x4 PerspectiveFovRH(float fieldOfViewY,float aspectRatio,float znearPlane, float zfarPlane);
 
 private:
     int width, height;
@@ -40,7 +41,7 @@ private:
     void DrawLine(const Vertex& a, const Vertex&  b, QRgb color);
     Vertex ProjectVertex(const Vertex& vertex, const QMatrix4x4& transMatrix, const QMatrix4x4& worldMatrix);
 
-    static QMatrix4x4 PerspectiveFovRH(float fieldOfViewY,float aspectRatio,float znearPlane, float zfarPlane);
+
     void Clear();
 
 

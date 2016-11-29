@@ -129,7 +129,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
     {
         double x = vertices[i*3].toDouble();
         double y = vertices[i*3+1].toDouble();
-        double z = vertices[i*3+1].toDouble();
+        double z = vertices[i*3+2].toDouble();
 
         double nx = normals[i*3].toDouble();
         double ny = normals[i*3+1].toDouble();
@@ -142,7 +142,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
 
     for(int i = 0; i < facesCount; i++)
     {
-        int a = indices[i].toInt();
+        int a = indices[i*3].toInt();
         int b = indices[i*3+1].toInt();
         int c = indices[i*3+2].toInt();
 

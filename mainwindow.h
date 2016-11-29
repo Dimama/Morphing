@@ -7,7 +7,7 @@
 #include "drawer.h"
 #include "camera.h"
 #include <message.h>
-
+#include <QTime>
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +38,7 @@ private:
     Ui::MainWindow *ui;
     Message* msg;
     QTimer* timer;
+    QTime t;
 
     Mesh mesh1,mesh2,mesh;
     vector<Face> faces;

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>723</width>
-    <height>600</height>
+    <width>700</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
    <widget class="QPushButton" name="btn_morph">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>470</y>
+      <x>27</x>
+      <y>570</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -34,17 +34,17 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>650</width>
-      <height>400</height>
+      <y>20</y>
+      <width>640</width>
+      <height>480</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_render">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>420</y>
+      <x>27</x>
+      <y>520</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>420</y>
+      <x>117</x>
+      <y>520</y>
       <width>281</width>
       <height>131</height>
      </rect>
@@ -145,10 +145,13 @@
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>430</y>
+      <x>407</x>
+      <y>530</y>
       <width>111</width>
       <height>61</height>
      </rect>
@@ -186,8 +189,8 @@
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>420</y>
+      <x>547</x>
+      <y>520</y>
       <width>81</width>
       <height>101</height>
      </rect>
@@ -210,6 +213,9 @@
      <property name="maximum">
       <number>5</number>
      </property>
+     <property name="value">
+      <number>1</number>
+     </property>
     </widget>
     <widget class="QSpinBox" name="spb_y">
      <property name="geometry">
@@ -226,6 +232,9 @@
      <property name="maximum">
       <number>5</number>
      </property>
+     <property name="value">
+      <number>1</number>
+     </property>
     </widget>
     <widget class="QSpinBox" name="spb_z">
      <property name="geometry">
@@ -241,6 +250,9 @@
      </property>
      <property name="maximum">
       <number>5</number>
+     </property>
+     <property name="value">
+      <number>1</number>
      </property>
     </widget>
     <widget class="QLabel" name="label">
@@ -286,8 +298,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>500</y>
+      <x>407</x>
+      <y>600</y>
       <width>118</width>
       <height>21</height>
      </rect>
@@ -305,8 +317,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>530</y>
+      <x>407</x>
+      <y>630</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -318,8 +330,8 @@
    <widget class="QSpinBox" name="spb_speed">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>530</y>
+      <x>517</x>
+      <y>630</y>
       <width>42</width>
       <height>22</height>
      </rect>

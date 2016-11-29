@@ -86,13 +86,6 @@ void Camera::RotationRightLeftSphere(double angle)
 
 QMatrix4x4 Camera::GetViewMatrix()
 {
-//     this->look.normalize();
-//     this->up = QVector3D::crossProduct(this->look,this->right);
-//     this->up.normalize();
-
-//     this->right = QVector3D::crossProduct(this->up,this->look);
-//     this->right.normalize();
-
     this->look = this->target - this->position;
     this->look.normalize();
     this->right = QVector3D::crossProduct(this->up,this->look);
@@ -103,15 +96,11 @@ QMatrix4x4 Camera::GetViewMatrix()
     float y = -QVector3D::dotProduct(this->up,this->position);
     float z = -QVector3D::dotProduct(this->look,this->position);
 
-     qDebug() << "x cam: " << x;
-     qDebug() << "y cam:" << y;
-     qDebug() << "z cam:" << z;
+    QMatrix4x4 tmp;
 
-     QMatrix4x4 tmp;
-
-     tmp.setRow(0,QVector4D(right.x(), up.x(), look.x(), 0));
-     tmp.setRow(1,QVector4D(right.y(), up.y(), look.y(), 0));
-     tmp.setRow(2,QVector4D(right.z(), up.z(), look.z(), 0));
-     tmp.setRow(3,QVector4D(x, y, z, 1));
-     return tmp;
+    tmp.setRow(0,QVector4D(right.x(), up.x(), look.x(), 0));
+    tmp.setRow(1,QVector4D(right.y(), up.y(), look.y(), 0));
+    tmp.setRow(2,QVector4D(right.z(), up.z(), look.z(), 0));
+    tmp.setRow(3,QVector4D(        x,      y,       z,   1));
+    return tmp;
 }

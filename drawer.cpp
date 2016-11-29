@@ -30,29 +30,9 @@ QGraphicsScene* Drawer::getScene()
 void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
 {
 
-    //    float pitch = rot.x(), yaw = rot.y(), roll = rot.z();
-
-    //    QMatrix4x4 xrot(1,0,0,0,
-    //                    0,cos(pitch),-sin(pitch),0,
-    //                    0,sin(pitch),cos(pitch),0,
-    //                    0,0,0,1);
-
-    //    QMatrix4x4 yrot(cos(yaw),0,sin(yaw),0,
-    //                    0,1,0,0,
-    //                    -sin(yaw),0,cos(yaw),0,
-    //                    0,0,0,1);
-
-    //    QMatrix4x4 zrot(cos(roll),-sin(roll),0,0,
-    //                    sin(roll),cos(roll),0,0,
-    //                    0,0,1,0,
-    //                    0,0,0,1);
-
-
     QTime t;
     t.start();
     Clear();
-
-    /*вычисление матриц */
 
 
     QMatrix4x4 viewmMatrix = camera.GetViewMatrix();
@@ -61,13 +41,14 @@ void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
 
     QVector3D rot = mesh.getRotation();
 
-    QMatrix4x4 rotationMatrix = Drawer::RotationYawPitchRoll(rot.y(),rot.x(),rot.z());
+    QMatrix4x4 rotationMatrix = (Drawer::RotationYawPitchRoll(rot.y(),rot.x(),rot.z())).transposed();
 
     QMatrix4x4 trans;
     trans.translate(mesh.getPosition());
 
-    QMatrix4x4 transformMatrix = rotationMatrix * trans * viewmMatrix * projectionMatrix;
-    QMatrix4x4 worldMatrix;
+    QMatrix4x4 worldMatrix  = rotationMatrix * trans;
+    QMatrix4x4 transformMatrix = worldMatrix * viewmMatrix * projectionMatrix;
+
 
     vector<Face> faces = mesh.getFaces();
 
@@ -86,7 +67,7 @@ void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
         }
         else
         {
-
+            qDebug() << "draw line " << i;
             DrawLine(a,b,color);
             DrawLine(c,b,color);
             DrawLine(a,c,color);
@@ -161,6 +142,7 @@ Vertex Drawer::ProjectVertex(const Vertex &vertex, const QMatrix4x4 &transMatrix
 {
        QVector3D point2d = Drawer::TransformCoordinate(transMatrix,vertex.Coord); // ???
 
+       /* Исправить масштабирование*/
        float x = point2d.x()*width + width/2.0;
        float y = -point2d.y()*height + height/2.0;
 
