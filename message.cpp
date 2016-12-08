@@ -19,7 +19,7 @@ void Message::showMessage(const char *text)
 
 const char* Message::getFileName()
 {
-    const QString fileName(QFileDialog::getOpenFileName(0, "Выберите файл", "", "*.txt"));
+    const QString fileName(QFileDialog::getOpenFileName(0, "Выберите файл", "", "*.babylon"));
 
     if(fileName.isEmpty())
         return NULL;

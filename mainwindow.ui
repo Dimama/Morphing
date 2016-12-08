@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>700</height>
+    <width>676</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
    <widget class="QPushButton" name="btn_morph">
     <property name="geometry">
      <rect>
-      <x>27</x>
-      <y>570</y>
+      <x>9</x>
+      <y>547</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>9</y>
       <width>640</width>
       <height>480</height>
      </rect>
@@ -43,21 +43,21 @@
    <widget class="QPushButton" name="btn_render">
     <property name="geometry">
      <rect>
-      <x>27</x>
-      <y>520</y>
+      <x>10</x>
+      <y>500</y>
       <width>81</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Отрисовать</string>
+     <string>Отображать</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>117</x>
-      <y>520</y>
+      <x>369</x>
+      <y>498</y>
       <width>281</width>
       <height>131</height>
      </rect>
@@ -144,162 +144,120 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>407</x>
-      <y>530</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Порядок морфинга</string>
-    </property>
-    <widget class="QRadioButton" name="rb_12">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string> 1 --&gt; 2</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rb_21">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string> 2 --&gt; 1</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>547</x>
-      <y>520</y>
+      <x>280</x>
+      <y>497</y>
       <width>81</width>
-      <height>101</height>
+      <height>91</height>
      </rect>
     </property>
     <property name="title">
      <string>Вращение </string>
     </property>
-    <widget class="QSpinBox" name="spb_x">
-     <property name="geometry">
-      <rect>
-       <x>28</x>
-       <y>19</y>
-       <width>42</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>-5</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="value">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spb_y">
-     <property name="geometry">
-      <rect>
-       <x>29</x>
-       <y>45</y>
-       <width>42</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>-5</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="value">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spb_z">
-     <property name="geometry">
-      <rect>
-       <x>29</x>
-       <y>71</y>
-       <width>42</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>-5</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="value">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>22</y>
-       <width>47</width>
-       <height>13</height>
+       <y>16</y>
+       <width>53</width>
+       <height>22</height>
       </rect>
      </property>
-     <property name="text">
-      <string>X:</string>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>X:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spb_x">
+        <property name="minimum">
+         <number>-5</number>
+        </property>
+        <property name="maximum">
+         <number>5</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>49</y>
-       <width>47</width>
-       <height>13</height>
+       <y>41</y>
+       <width>53</width>
+       <height>22</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Y:</string>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Y:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spb_y">
+        <property name="minimum">
+         <number>-5</number>
+        </property>
+        <property name="maximum">
+         <number>5</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>76</y>
-       <width>47</width>
-       <height>13</height>
+       <y>66</y>
+       <width>53</width>
+       <height>22</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Z:</string>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Z:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spb_z">
+        <property name="minimum">
+         <number>-5</number>
+        </property>
+        <property name="maximum">
+         <number>5</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>407</x>
-      <y>600</y>
+      <x>220</x>
+      <y>610</y>
       <width>118</width>
       <height>21</height>
      </rect>
@@ -314,37 +272,92 @@
      <string>%p%</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>407</x>
-      <y>630</y>
-      <width>111</width>
-      <height>16</height>
+      <x>95</x>
+      <y>497</y>
+      <width>181</width>
+      <height>91</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Скорость морфинга: </string>
+    <property name="title">
+     <string>Модель освещения</string>
     </property>
+    <widget class="QRadioButton" name="rb_non">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Без освещения</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rb_flat">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>161</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Плоская модель освещения</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rb_guro">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>131</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Освещение по Гуро</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QSpinBox" name="spb_speed">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>517</x>
-      <y>630</y>
-      <width>42</width>
+      <x>10</x>
+      <y>610</y>
+      <width>152</width>
       <height>22</height>
      </rect>
     </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>20</number>
-    </property>
-    <property name="value">
-     <number>20</number>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Скорость морфинга: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spb_speed">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>40</number>
+       </property>
+       <property name="value">
+        <number>20</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -384,6 +397,7 @@
    <addaction name="separator"/>
    <addaction name="actionHELP"/>
    <addaction name="separator"/>
+   <addaction name="actionColor"/>
   </widget>
   <action name="actionHELP">
    <property name="checkable">
@@ -402,15 +416,12 @@
     <string>H</string>
    </property>
   </action>
-  <action name="actionFILE">
+  <action name="actionColor">
    <property name="text">
-    <string>ЗАГРУЗКА МОДЕЛИ</string>
+    <string>ЦВЕТ</string>
    </property>
    <property name="toolTip">
-    <string>Загрузить модель</string>
-   </property>
-   <property name="shortcut">
-    <string>F</string>
+    <string>Выбор цвета</string>
    </property>
   </action>
  </widget>

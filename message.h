@@ -1,12 +1,11 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "b_message.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
-class Message : public QFileDialog, public B_Message
+class Message : public QFileDialog
 {
     Q_OBJECT
 

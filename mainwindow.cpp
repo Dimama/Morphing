@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMessageBox>
+
 #include <QDebug>
 
+
 #define N INT_MAX
-#define TIME 22
+#define TIME 25
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -21,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     try
     {
-        mesh1 = Mesh::LoadFromJSON("cube.babylon");
-        mesh2 = Mesh::LoadFromJSON("other.babylon");
+        mesh1 = Mesh::LoadFromJSON("UVSphere.babylon");
+        mesh2 = Mesh::LoadFromJSON("Monkey.babylon");
     }
     catch(B_Error& err)
     {
@@ -36,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lbl_obj1->setText("Объект 1: " + mesh1.getName());
     ui->lbl_obj2->setText("Объект 2: " + mesh2.getName());
 
-    ui->rb_12->setChecked(1);
     ui->rb_obj1->setChecked(1);
 
     render = false;
@@ -49,6 +49,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timer_overflow()));
 
     ui->btn_morph->setEnabled(0);
+
+    color = qRgba64(0,0,0,255);
+
+    this->on_btn_render_clicked();
 
 }
 
@@ -135,13 +139,17 @@ void MainWindow::on_btn_load_clicked()
         mesh1 = mesh_tmp;
         mesh = mesh1;
         ui->lbl_obj1->setText("Объект 1: " + mesh1.getName());
-
     }
     else
     {
         mesh2 = mesh_tmp;
         mesh = mesh2;
         ui->lbl_obj2->setText("Объект 2: " + mesh2.getName());
+    }
+
+    if(ui->rb_flat->isChecked())
+    {
+        this->on_rb_flat_clicked();
     }
 
 }
@@ -162,13 +170,13 @@ void MainWindow::on_btn_render_clicked()
     }
     else
     {
-        ui->btn_render->setText("Отрисовать");
+        ui->btn_render->setText("Старт");
         timer->stop();
     }
     render = true;
 }
 
-/* Обрабатываем каждую секунду таймера*/
+
 void MainWindow::timer_overflow()
 {
 
@@ -180,9 +188,9 @@ void MainWindow::timer_overflow()
     }
     if(step < steps)
     {
-        step += speed;
         ui->progressBar->setValue(step);
         mesh.Morph(faces,speed);
+        step += speed;
     }
     if(step == steps)
     {
@@ -190,18 +198,24 @@ void MainWindow::timer_overflow()
         ui->btn_load->setEnabled(1);
         ui->btn_morph->setEnabled(1);
 
+        if(ui->rb_guro->isChecked())
+        {
+            this->on_rb_guro_clicked();
+        }
         step = N;
         morph = false;
     }
 
-    render = (morph || ui->spb_x->value() || ui->spb_y->value() || ui->spb_z->value());
+
     if(render)
     {
-        drawer->Render(mesh,cam,qRgb(0,0,255),false);
-
+        bool shading = !(ui->rb_non->isChecked());
+        drawer->Render(mesh, cam, qRgba64(color.red(),color.green(), color.blue(), 255), shading);
     }
 
-    ui->statusBar->showMessage("Render time: " + QString::number(t.elapsed()));
+    render = (morph || ui->spb_x->value() || ui->spb_y->value() || ui->spb_z->value());
+
+    ui->statusBar->showMessage("Время рендеринга: " + QString::number(t.elapsed()) + " мс");
 }
 
 
@@ -209,4 +223,38 @@ void MainWindow::on_spb_speed_valueChanged(int arg1)
 {
     ui->spb_speed->setValue(arg1);
     speed = ui->spb_speed->value();
+}
+
+void MainWindow::on_actionColor_triggered()
+{
+   this->color = QColorDialog::getColor(Qt::blue,this);
+   render = true;
+}
+
+
+void MainWindow::on_rb_flat_clicked()
+{
+    for(unsigned int i = 0; i < mesh.getFaces().size(); i++)
+    {
+        mesh.CalculateFaceNormals((int)i);
+    }
+    render = true;
+}
+
+void MainWindow::on_rb_guro_clicked()
+{
+    if(mesh.isEqual(mesh1) == 1)
+    {
+        mesh.LoadNormalsFromMesh(mesh1);
+    }
+    if(mesh.isEqual(mesh2) == 1)
+    {
+        mesh.LoadNormalsFromMesh(mesh2);
+    }
+    render = true;
+}
+
+void MainWindow::on_rb_non_clicked()
+{
+    render = true;
 }

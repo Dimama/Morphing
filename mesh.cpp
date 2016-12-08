@@ -1,7 +1,5 @@
 #include "mesh.h"
 
-/* возможно убрать массив вершин*/
-#include <QDebug>
 Mesh::Mesh()
 {
 
@@ -11,7 +9,6 @@ Mesh::Mesh(const Mesh &mesh)
 {
     this->name = mesh.name;
     this->faces = mesh.faces;
-    this->vertices = mesh.vertices;
     this->position = mesh.position;
     this->rotation = mesh.rotation;
 }
@@ -20,15 +17,12 @@ Mesh::~Mesh()
 {
     if(this->faces.size() > 0)
         this->faces.clear();
-    if(this->vertices.size() > 0)
-        this->vertices.clear();
 }
 
 Mesh &Mesh::operator=(const Mesh &mesh)
 {
     this->name = mesh.name;
     this->faces = mesh.faces;
-    this->vertices = mesh.vertices;
     this->position = mesh.position;
     this->rotation = mesh.rotation;
 
@@ -51,6 +45,7 @@ void Mesh::CalculateFaceNormals(int i)
     QVector3D v2 = this->faces[i].C.Coord - this->faces[i].A.Coord;
 
     QVector3D normal = QVector3D::crossProduct(v1,v2);
+    normal.normalize();
 
     this->faces[i].A.Normal = normal;
     this->faces[i].B.Normal = normal;
@@ -101,8 +96,6 @@ Mesh Mesh::LoadFromJSON(const char *filename)
         throw E_OpenFile();
     }
 
-    qDebug() << a;
-
     // читаем текст из Json
     QString json = QString(file.readAll());
 
@@ -125,6 +118,7 @@ Mesh Mesh::LoadFromJSON(const char *filename)
     Mesh model;
     model.name  = name;
 
+    vector<Vertex> tmp_vertices;
     for(int i = 0; i < verticesCount; i++)
     {
         double x = vertices[i*3].toDouble();
@@ -137,8 +131,9 @@ Mesh Mesh::LoadFromJSON(const char *filename)
 
         Vertex v = {QVector3D(x,y,z), QVector3D(nx,ny,nz), QVector3D(0,0,0)};
 
-        model.vertices.push_back(v);
+        tmp_vertices.push_back(v);
     }
+
 
     for(int i = 0; i < facesCount; i++)
     {
@@ -146,10 +141,11 @@ Mesh Mesh::LoadFromJSON(const char *filename)
         int b = indices[i*3+1].toInt();
         int c = indices[i*3+2].toInt();
 
-        Face f = {model.vertices[a], model.vertices[b], model.vertices[c]};
+        Face f = {tmp_vertices[a], tmp_vertices[b], tmp_vertices[c]};
 
         model.faces.push_back(f);
     }
+    tmp_vertices.clear();
 
     model.position = QVector3D(position[0].toDouble(), position[1].toDouble(), position[2].toDouble());
 

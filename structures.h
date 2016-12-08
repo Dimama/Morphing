@@ -3,7 +3,6 @@
 
 #include <QVector3D>
 
-/* Структуры данных*/
 
 typedef struct _Vertex
 {
@@ -19,5 +18,15 @@ typedef struct _Face
     Vertex C;
 }Face;
 
+
+typedef struct _ScanLine
+{
+    int currentY;
+    float ndotla;
+    float ndotlb;
+    float ndotlc;
+    float ndotld;
+
+}ScanLine;
 
 #endif // STRUCTURES_H

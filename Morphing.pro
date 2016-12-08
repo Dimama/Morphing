@@ -15,15 +15,22 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mesh.cpp \
-    vector3.cpp
+    camera.cpp \
+    drawer.cpp \
+    message.cpp
 
 HEADERS  += mainwindow.h \
     mesh.h \
     structures.h \
-    vector3.h \
     b_error.h \
-    fileerrors.h
+    fileerrors.h \
+    camera.h \
+    drawer.h \
+    message.h
 
 FORMS    += mainwindow.ui
 
-LIBS    += -lqjson-qt5
+QMAKE_CXXFLAGS += -fopenmp
+QMAKE_LFLAGS   += -fopenmp
+
+LIBS    += -lqjson-qt5 -lgomp -lpthread

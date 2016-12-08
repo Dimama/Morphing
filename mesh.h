@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QVector3D>
 #include <vector>
+
 using std::vector;
 
 
@@ -40,7 +41,6 @@ public:
 
 private:
     QString name;
-    vector<Vertex> vertices;
     vector<Face> faces;
     QVector3D position;
     QVector3D rotation;

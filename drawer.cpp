@@ -1,8 +1,5 @@
 #include "drawer.h"
-#include <omp.h>
-#include <QColor>
-#include <QTime>
-#include <math.h>
+
 
 Drawer::~Drawer()
 {
@@ -16,9 +13,9 @@ Drawer::Drawer(int width, int height)
     this->height = height-2;
     scene = new QGraphicsScene();
 
-    QImage img(width-2, height-2, QImage::Format_RGB888);
+    QImage img(width-2, height-2, QImage::Format_RGBA8888);
     img.fill(Qt::white);
-    pixels = (uchar*)malloc (this->width*this->height*3 * sizeof(uchar));
+    pixels = (uchar*)malloc(this->width*this->height*4 * sizeof(uchar));
     scene->addPixmap(QPixmap::fromImage(img));
 }
 
@@ -27,13 +24,12 @@ QGraphicsScene* Drawer::getScene()
     return this->scene;
 }
 
-void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
+void Drawer::Render(const Mesh& mesh, Camera& camera, QRgba64 color, bool shading)
 {
 
     QTime t;
     t.start();
     Clear();
-
 
     QMatrix4x4 viewmMatrix = camera.GetViewMatrix();
 
@@ -52,7 +48,7 @@ void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
 
     vector<Face> faces = mesh.getFaces();
 
-#pragma omp parallel for schedule(dynamic, 1)
+#pragma omp parallel for
     for(unsigned int i = 0; i < faces.size(); i++)
     {
         Face face = faces[i];
@@ -63,11 +59,10 @@ void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
 
         if(shading)
         {
-            //
+            DrawTriangle(a,b,c,color);
         }
         else
         {
-            qDebug() << "draw line " << i;
             DrawLine(a,b,color);
             DrawLine(c,b,color);
             DrawLine(a,c,color);
@@ -75,14 +70,15 @@ void Drawer::Render(const Mesh& mesh, Camera& camera, QRgb color, bool shading)
     }
 
 
-    QImage img(pixels, this->width, this->height, this->width*3, QImage::Format_RGB888);
+    QImage img(pixels, this->width, this->height, this->width*4, QImage::Format_RGBA8888);
 
     scene->addPixmap(QPixmap::fromImage(img));
     qDebug() << "draw time: " << t.elapsed();
 }
 
-void Drawer::DrawPixel(int x, int y, float z, QRgb color)
+void Drawer::DrawPixel(int x, int y, float z, QRgba64 color)
 {
+
     int i = x + y*this->width;
     if(depthBuffer[i] < z)
     {
@@ -90,20 +86,19 @@ void Drawer::DrawPixel(int x, int y, float z, QRgb color)
     }
     depthBuffer[i] = z;
 
-    int i3 = i*3;
-    pixels[i3] = QColor(color).red();
-    pixels[i3+1] = QColor(color).green();
-    pixels[i3+2] = QColor(color).blue();
-
+    pixels[i*4] = color.red();
+    pixels[i*4+1] = color.green();
+    pixels[i*4+2] = color.blue();
+    pixels[i*4+3] = color.alpha();
 }
 
-void Drawer::DrawPoint(QVector3D v, QRgb color)
+void Drawer::DrawPoint(QVector3D v, QRgba64 color)
 {
     if(v.x() > 0 && v.y() > 0 && v.x() < this->width && v.y() < this->height)
         DrawPixel((int)v.x(), (int)v.y(), v.z(), color);
 }
 
-void Drawer::DrawLine(const Vertex& a, const Vertex&  b, QRgb color)
+void Drawer::DrawLine(const Vertex& a, const Vertex&  b, QRgba64 color)
 {
 
    int xa = (int)a.Coord.x();
@@ -140,13 +135,15 @@ void Drawer::DrawLine(const Vertex& a, const Vertex&  b, QRgb color)
 /* преобразовываем вершину для ее отображения */
 Vertex Drawer::ProjectVertex(const Vertex &vertex, const QMatrix4x4 &transMatrix, const QMatrix4x4 &worldMatrix)
 {
-       QVector3D point2d = Drawer::TransformCoordinate(transMatrix,vertex.Coord); // ???
+       QVector3D point2d = Drawer::TransformCoordinate(transMatrix,vertex.Coord);
 
-       /* Исправить масштабирование*/
+       QVector3D point3d = Drawer::TransformCoordinate(worldMatrix, vertex.Coord);
+       QVector3D norm3d = Drawer::TransformCoordinate(worldMatrix, vertex.Normal);
+
        float x = point2d.x()*width + width/2.0;
        float y = -point2d.y()*height + height/2.0;
 
-       return {QVector3D(x,y,point2d.z()), vertex.Normal, vertex.WCoord};
+       return {QVector3D(x,y,point2d.z()), norm3d, point3d};
 }
 
 QVector3D Drawer::TransformCoordinate(const QMatrix4x4 &mat, const QVector3D &vec)
@@ -207,9 +204,218 @@ QMatrix4x4 Drawer::PerspectiveFovRH(float fieldOfViewY, float aspectRatio, float
                       0,0,znearPlane*zfarPlane/(znearPlane-zfarPlane), 0);
 }
 
+float Drawer::Clamp(float value)
+{
+    return std::max((float)0, std::min(value,(float)1));
+}
+
+float Drawer::Interpolate(float min, float max, float grad)
+{
+    return min + (max - min) * Clamp(grad);
+}
+
+/* Cкалярное произведение вектора нормали и вектора освещения*/
+float Drawer::CalculateNDotL(const QVector3D &v, const QVector3D l_pos, QVector3D &n)
+{
+    QVector3D l_dir = l_pos - v;
+
+    n.normalize();
+    l_dir.normalize();
+
+    return std::max((float)0, QVector3D::dotProduct(n, l_dir));
+}
+
+void Drawer::DrawScanLine(const ScanLine &data, const Vertex &va, const Vertex &vb, const Vertex &vc, const Vertex &vd, QRgba64 color)
+{
+    QVector3D pa = va.Coord;
+    QVector3D pb = vb.Coord;
+    QVector3D pc = vc.Coord;
+    QVector3D pd = vd.Coord;
+
+    float grad1, grad2;
+
+    if(pa.y() == pb.y())
+        grad1 = 1;
+    else
+        grad1 = (data.currentY -pa.y()) / (pb.y() - pa.y());
+
+    if(pc.y() == pd.y())
+        grad2 = 1;
+    else
+        grad2 = (data.currentY - pc.y()) / (pd.y() - pc.y());
+
+
+    int sx = (int)Interpolate(pa.x(), pb.x(), grad1);
+    int ex = (int)Interpolate(pc.x(), pd.x(), grad2);
+
+    float sz = Interpolate(pa.z(), pb.z(), grad1);
+    float ez = Interpolate(pc.z(), pd.z(), grad2);
+
+    float snl = Interpolate(data.ndotla, data.ndotlb, grad1);
+    float enl = Interpolate(data.ndotlc, data.ndotld, grad2);
+
+    for(int x = sx; x < ex; x++)
+    {
+        float grad = (float)(x-sx)/(ex-sx);
+
+        float z = Interpolate(sz,ez,grad);
+        float ndotl = Interpolate(snl,enl,grad);
+
+        float alpha = 255 - (int)(color.alpha()*ndotl/3);
+        float blue = (color.blue()*ndotl);
+        float green = (color.green()*ndotl);
+        float red = (color.red()*ndotl);
+        DrawPoint(QVector3D(x,data.currentY,z), qRgba64(red,green,blue,alpha));
+    }
+}
+
+void Drawer::DrawTriangle(Vertex &v1, Vertex &v2, Vertex &v3, QRgba64 color)
+{
+    /*Сортировка точек в порядке v1.y v2.y v3.y*/
+    if(v1.Coord.y() > v2.Coord.y())
+        std::swap(v1,v2);
+
+    if(v2.Coord.y() > v3.Coord.y())
+        std::swap(v2,v3);
+
+    if(v1.Coord.y() > v2.Coord.y())
+        std::swap(v1,v2);
+
+    QVector3D p1 = v1.Coord;
+    QVector3D p2 = v2.Coord;
+    QVector3D p3 = v3.Coord;
+
+    QVector3D light_source = QVector3D(0,0,-10);
+
+    float nl1 = CalculateNDotL(v1.WCoord,light_source,v1.Normal);
+    float nl2 = CalculateNDotL(v2.WCoord,light_source,v2.Normal);
+    float nl3 = CalculateNDotL(v3.WCoord,light_source,v3.Normal);
+
+    ScanLine data;
+
+    float k12, k13;
+
+    // Вычисление угловых коэффциентов прямых
+    if(p2.y() - p1.y() > 0)
+        k12 = (p2.x() - p1.x()) / (p2.y()-p1.y());
+    else
+        k12 = 0;
+
+    if(p3.y() - p1.y() > 0)
+        k13 = (p3.x() - p1.x()) / (p3.y()-p1.y());
+    else
+        k13 = 0;
+
+
+    if (k12 == 0)
+    {
+        if (k13 < 0)
+        {
+            for (int y = (int)p1.y(); y <= (int)p3.y(); y++)
+            {
+                data.currentY = y;
+
+                if (y < p2.y())
+                {
+                    data.ndotla = nl1;
+                    data.ndotlb = nl2;
+                    data.ndotlc = nl1;
+                    data.ndotld = nl3;
+                    DrawScanLine(data, v1, v2, v1, v3, color);
+                }
+                else
+                {
+                    data.ndotla = nl2;
+                    data.ndotlb = nl3;
+                    data.ndotlc = nl1;
+                    data.ndotld = nl3;
+                    DrawScanLine(data, v2, v3, v1, v3, color);
+                }
+            }
+         }
+         else
+         {
+            for (int y = (int)p1.y(); y <= (int)p3.y(); y++)
+            {
+                data.currentY = y;
+
+                if (y < p2.y())
+                {
+                    data.ndotla = nl1;
+                    data.ndotlb = nl3;
+                    data.ndotlc = nl1;
+                    data.ndotld = nl2;
+                    DrawScanLine(data, v1, v3, v1, v2, color);
+                }
+                else
+                {
+                    data.ndotla = nl1;
+                    data.ndotlb = nl3;
+                    data.ndotlc = nl2;
+                    data.ndotld = nl3;
+                    DrawScanLine(data, v1, v3, v2, v3, color);
+                }
+
+            }
+        }
+    }
+
+    if (k12 > k13)
+    {
+        for (int y = (int)p1.y(); y <= (int)p3.y(); y++)
+        {
+            data.currentY = y;
+
+            if (y < p2.y())
+            {
+                data.ndotla = nl1;
+                data.ndotlb = nl3;
+                data.ndotlc = nl1;
+                data.ndotld = nl2;
+                DrawScanLine(data, v1, v3, v1, v2, color);
+            }
+            else
+            {
+                data.ndotla = nl1;
+                data.ndotlb = nl3;
+                data.ndotlc = nl2;
+                data.ndotld = nl3;
+                DrawScanLine(data, v1, v3, v2, v3, color);
+            }
+        }
+    }
+
+    if (k12 < k13)
+    {
+        for (int y = (int)p1.y(); y <= (int)p3.y(); y++)
+        {
+            data.currentY = y;
+
+            if (y < p2.y())
+            {
+                data.ndotla = nl1;
+                data.ndotlb = nl2;
+                data.ndotlc = nl1;
+                data.ndotld = nl3;
+                DrawScanLine(data, v1, v2, v1, v3, color);
+            }
+            else
+            {
+                data.ndotla = nl2;
+                data.ndotlb = nl3;
+                data.ndotlc = nl1;
+                data.ndotld = nl3;
+                DrawScanLine(data, v2, v3, v1, v3, color);
+            }
+        }
+    }
+}
+
+
+
 void Drawer::Clear()
 {
-    memset(pixels,255,width*height*3*sizeof(uchar));
+    memset(pixels,255,width*height*4*sizeof(uchar));
     depthBuffer.assign(this->height*this->width, FLT_MAX);
     scene->clear();
 }

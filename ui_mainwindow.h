@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -32,7 +33,7 @@ class Ui_MainWindow
 {
 public:
     QAction *actionHELP;
-    QAction *actionFILE;
+    QAction *actionColor;
     QWidget *centralWidget;
     QPushButton *btn_morph;
     QGraphicsView *Canvas;
@@ -44,17 +45,26 @@ public:
     QRadioButton *rb_obj2;
     QLabel *lbl_obj1;
     QLabel *lbl_obj2;
-    QGroupBox *groupBox_3;
-    QRadioButton *rb_12;
-    QRadioButton *rb_21;
     QGroupBox *groupBox_4;
-    QSpinBox *spb_x;
-    QSpinBox *spb_y;
-    QSpinBox *spb_z;
+    QWidget *layoutWidget;
+    QHBoxLayout *horizontalLayout;
     QLabel *label;
+    QSpinBox *spb_x;
+    QWidget *layoutWidget1;
+    QHBoxLayout *horizontalLayout_2;
     QLabel *label_2;
+    QSpinBox *spb_y;
+    QWidget *layoutWidget2;
+    QHBoxLayout *horizontalLayout_3;
     QLabel *label_3;
+    QSpinBox *spb_z;
     QProgressBar *progressBar;
+    QGroupBox *groupBox_3;
+    QRadioButton *rb_non;
+    QRadioButton *rb_flat;
+    QRadioButton *rb_guro;
+    QWidget *layoutWidget3;
+    QHBoxLayout *horizontalLayout_4;
     QLabel *label_4;
     QSpinBox *spb_speed;
     QStatusBar *statusBar;
@@ -65,27 +75,27 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->setWindowModality(Qt::ApplicationModal);
-        MainWindow->resize(700, 700);
+        MainWindow->resize(676, 684);
         actionHELP = new QAction(MainWindow);
         actionHELP->setObjectName(QStringLiteral("actionHELP"));
         actionHELP->setCheckable(false);
         actionHELP->setChecked(false);
-        actionFILE = new QAction(MainWindow);
-        actionFILE->setObjectName(QStringLiteral("actionFILE"));
+        actionColor = new QAction(MainWindow);
+        actionColor->setObjectName(QStringLiteral("actionColor"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         btn_morph = new QPushButton(centralWidget);
         btn_morph->setObjectName(QStringLiteral("btn_morph"));
-        btn_morph->setGeometry(QRect(27, 570, 81, 41));
+        btn_morph->setGeometry(QRect(9, 547, 81, 41));
         Canvas = new QGraphicsView(centralWidget);
         Canvas->setObjectName(QStringLiteral("Canvas"));
-        Canvas->setGeometry(QRect(10, 20, 640, 480));
+        Canvas->setGeometry(QRect(10, 9, 640, 480));
         btn_render = new QPushButton(centralWidget);
         btn_render->setObjectName(QStringLiteral("btn_render"));
-        btn_render->setGeometry(QRect(27, 520, 81, 41));
+        btn_render->setGeometry(QRect(10, 500, 81, 41));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(117, 520, 281, 131));
+        groupBox->setGeometry(QRect(369, 498, 281, 131));
         btn_load = new QPushButton(groupBox);
         btn_load->setObjectName(QStringLiteral("btn_load"));
         btn_load->setGeometry(QRect(10, 20, 121, 23));
@@ -104,60 +114,111 @@ public:
         lbl_obj2 = new QLabel(groupBox);
         lbl_obj2->setObjectName(QStringLiteral("lbl_obj2"));
         lbl_obj2->setGeometry(QRect(150, 80, 121, 16));
-        groupBox_3 = new QGroupBox(centralWidget);
-        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setEnabled(false);
-        groupBox_3->setGeometry(QRect(407, 530, 111, 61));
-        rb_12 = new QRadioButton(groupBox_3);
-        rb_12->setObjectName(QStringLiteral("rb_12"));
-        rb_12->setGeometry(QRect(10, 20, 82, 17));
-        rb_21 = new QRadioButton(groupBox_3);
-        rb_21->setObjectName(QStringLiteral("rb_21"));
-        rb_21->setGeometry(QRect(10, 40, 82, 17));
         groupBox_4 = new QGroupBox(centralWidget);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        groupBox_4->setGeometry(QRect(547, 520, 81, 101));
-        spb_x = new QSpinBox(groupBox_4);
+        groupBox_4->setGeometry(QRect(280, 497, 81, 91));
+        layoutWidget = new QWidget(groupBox_4);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 16, 53, 22));
+        horizontalLayout = new QHBoxLayout(layoutWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        horizontalLayout->addWidget(label);
+
+        spb_x = new QSpinBox(layoutWidget);
         spb_x->setObjectName(QStringLiteral("spb_x"));
-        spb_x->setGeometry(QRect(28, 19, 42, 22));
         spb_x->setMinimum(-5);
         spb_x->setMaximum(5);
         spb_x->setValue(1);
-        spb_y = new QSpinBox(groupBox_4);
+
+        horizontalLayout->addWidget(spb_x);
+
+        layoutWidget1 = new QWidget(groupBox_4);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(10, 41, 53, 22));
+        horizontalLayout_2 = new QHBoxLayout(layoutWidget1);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        label_2 = new QLabel(layoutWidget1);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        horizontalLayout_2->addWidget(label_2);
+
+        spb_y = new QSpinBox(layoutWidget1);
         spb_y->setObjectName(QStringLiteral("spb_y"));
-        spb_y->setGeometry(QRect(29, 45, 42, 22));
         spb_y->setMinimum(-5);
         spb_y->setMaximum(5);
         spb_y->setValue(1);
-        spb_z = new QSpinBox(groupBox_4);
+
+        horizontalLayout_2->addWidget(spb_y);
+
+        layoutWidget2 = new QWidget(groupBox_4);
+        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(10, 66, 53, 22));
+        horizontalLayout_3 = new QHBoxLayout(layoutWidget2);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
+        label_3 = new QLabel(layoutWidget2);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        horizontalLayout_3->addWidget(label_3);
+
+        spb_z = new QSpinBox(layoutWidget2);
         spb_z->setObjectName(QStringLiteral("spb_z"));
-        spb_z->setGeometry(QRect(29, 71, 42, 22));
         spb_z->setMinimum(-5);
         spb_z->setMaximum(5);
         spb_z->setValue(1);
-        label = new QLabel(groupBox_4);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(10, 22, 47, 13));
-        label_2 = new QLabel(groupBox_4);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(10, 49, 47, 13));
-        label_3 = new QLabel(groupBox_4);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(10, 76, 47, 13));
+
+        horizontalLayout_3->addWidget(spb_z);
+
         progressBar = new QProgressBar(centralWidget);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(407, 600, 118, 21));
+        progressBar->setGeometry(QRect(220, 610, 118, 21));
         progressBar->setValue(0);
         progressBar->setOrientation(Qt::Horizontal);
-        label_4 = new QLabel(centralWidget);
+        groupBox_3 = new QGroupBox(centralWidget);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setGeometry(QRect(95, 497, 181, 91));
+        rb_non = new QRadioButton(groupBox_3);
+        rb_non->setObjectName(QStringLiteral("rb_non"));
+        rb_non->setGeometry(QRect(10, 20, 121, 17));
+        rb_non->setChecked(true);
+        rb_flat = new QRadioButton(groupBox_3);
+        rb_flat->setObjectName(QStringLiteral("rb_flat"));
+        rb_flat->setGeometry(QRect(10, 40, 161, 17));
+        rb_guro = new QRadioButton(groupBox_3);
+        rb_guro->setObjectName(QStringLiteral("rb_guro"));
+        rb_guro->setGeometry(QRect(10, 60, 131, 17));
+        layoutWidget3 = new QWidget(centralWidget);
+        layoutWidget3->setObjectName(QStringLiteral("layoutWidget3"));
+        layoutWidget3->setGeometry(QRect(10, 610, 152, 22));
+        horizontalLayout_4 = new QHBoxLayout(layoutWidget3);
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
+        label_4 = new QLabel(layoutWidget3);
         label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setGeometry(QRect(407, 630, 111, 16));
-        spb_speed = new QSpinBox(centralWidget);
+
+        horizontalLayout_4->addWidget(label_4);
+
+        spb_speed = new QSpinBox(layoutWidget3);
         spb_speed->setObjectName(QStringLiteral("spb_speed"));
-        spb_speed->setGeometry(QRect(517, 630, 42, 22));
         spb_speed->setMinimum(1);
-        spb_speed->setMaximum(20);
+        spb_speed->setMaximum(40);
         spb_speed->setValue(20);
+
+        horizontalLayout_4->addWidget(spb_speed);
+
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -178,6 +239,7 @@ public:
         toolBar->addSeparator();
         toolBar->addAction(actionHELP);
         toolBar->addSeparator();
+        toolBar->addAction(actionColor);
 
         retranslateUi(MainWindow);
 
@@ -192,13 +254,12 @@ public:
         actionHELP->setToolTip(QApplication::translate("MainWindow", "\320\241\320\237\320\240\320\220\320\222\320\232\320\220", 0));
 #endif // QT_NO_TOOLTIP
         actionHELP->setShortcut(QApplication::translate("MainWindow", "H", 0));
-        actionFILE->setText(QApplication::translate("MainWindow", "\320\227\320\220\320\223\320\240\320\243\320\227\320\232\320\220 \320\234\320\236\320\224\320\225\320\233\320\230", 0));
+        actionColor->setText(QApplication::translate("MainWindow", "\320\246\320\222\320\225\320\242", 0));
 #ifndef QT_NO_TOOLTIP
-        actionFILE->setToolTip(QApplication::translate("MainWindow", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\274\320\276\320\264\320\265\320\273\321\214", 0));
+        actionColor->setToolTip(QApplication::translate("MainWindow", "\320\222\321\213\320\261\320\276\321\200 \321\206\320\262\320\265\321\202\320\260", 0));
 #endif // QT_NO_TOOLTIP
-        actionFILE->setShortcut(QApplication::translate("MainWindow", "F", 0));
         btn_morph->setText(QApplication::translate("MainWindow", "MORPH", 0));
-        btn_render->setText(QApplication::translate("MainWindow", "\320\236\321\202\321\200\320\270\321\201\320\276\320\262\320\260\321\202\321\214", 0));
+        btn_render->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\276\320\261\321\200\320\260\320\266\320\260\321\202\321\214", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "\320\236\320\261\321\212\320\265\320\272\321\202\321\213", 0));
         btn_load->setText(QApplication::translate("MainWindow", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\276\320\261\321\212\320\265\320\272\321\202", 0));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214", 0));
@@ -206,14 +267,15 @@ public:
         rb_obj2->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\212\320\265\320\272\321\202 2", 0));
         lbl_obj1->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\212\320\265\320\272\321\202 1: ", 0));
         lbl_obj2->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\212\320\265\320\272\321\202 2: ", 0));
-        groupBox_3->setTitle(QApplication::translate("MainWindow", "\320\237\320\276\321\200\321\217\320\264\320\276\320\272 \320\274\320\276\321\200\321\204\320\270\320\275\320\263\320\260", 0));
-        rb_12->setText(QApplication::translate("MainWindow", " 1 --> 2", 0));
-        rb_21->setText(QApplication::translate("MainWindow", " 2 --> 1", 0));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "\320\222\321\200\320\260\321\211\320\265\320\275\320\270\320\265 ", 0));
         label->setText(QApplication::translate("MainWindow", "X:", 0));
         label_2->setText(QApplication::translate("MainWindow", "Y:", 0));
         label_3->setText(QApplication::translate("MainWindow", "Z:", 0));
         progressBar->setFormat(QApplication::translate("MainWindow", "%p%", 0));
+        groupBox_3->setTitle(QApplication::translate("MainWindow", "\320\234\320\276\320\264\320\265\320\273\321\214 \320\276\321\201\320\262\320\265\321\211\320\265\320\275\320\270\321\217", 0));
+        rb_non->setText(QApplication::translate("MainWindow", "\320\221\320\265\320\267 \320\276\321\201\320\262\320\265\321\211\320\265\320\275\320\270\321\217", 0));
+        rb_flat->setText(QApplication::translate("MainWindow", "\320\237\320\273\320\276\321\201\320\272\320\260\321\217 \320\274\320\276\320\264\320\265\320\273\321\214 \320\276\321\201\320\262\320\265\321\211\320\265\320\275\320\270\321\217", 0));
+        rb_guro->setText(QApplication::translate("MainWindow", "\320\236\321\201\320\262\320\265\321\211\320\265\320\275\320\270\320\265 \320\277\320\276 \320\223\321\203\321\200\320\276", 0));
         label_4->setText(QApplication::translate("MainWindow", "\320\241\320\272\320\276\321\200\320\276\321\201\321\202\321\214 \320\274\320\276\321\200\321\204\320\270\320\275\320\263\320\260: ", 0));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
     } // retranslateUi
